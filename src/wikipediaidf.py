@@ -51,9 +51,10 @@ def get_lines(input_files):
 
 
 def process_line(line):
+	global stemmer
 	article_json = json.loads(line)
 	tokens = set(filter_tokens(word_tokenize(article_json["text"])))
-	stems, token_to_stem_mapping = stem(tokens)
+	stems, token_to_stem_mapping = stem(tokens) if stemmer else None, None
 	return tokens, stems, token_to_stem_mapping
 
 
@@ -69,8 +70,7 @@ def main():
 
 	nltk.download("punkt")
 
-	if args.stem:
-		stemmer = SnowballStemmer(args.stem)
+	stemmer = SnowballStemmer(args.stem) if args.stem else None
 
 	tokens_c = Counter()
 	stems_c = Counter()
